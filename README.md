@@ -1,72 +1,34 @@
-<img src="./doc/BB02_logo_github.svg" width="345px"/>
+![CI](https://github.com/chaitanya21kumar/x1-btc-psbt-firmware/workflows/ci/badge.svg?branch=main)
 
-![CI](https://github.com/Chaitanya Kumar/x1-btc-psbt-firmware-firmware/workflows/ci/badge.svg?branch=master)
+**X1-BTC-PSBT-Firmware** is a Bitcoin-only firmware for the Cypherock X1 hardware wallet.  
+It provides secure key storage and transaction signing using BIP-32/39 key derivation and BIP-174 PSBT flows.  
 
-The X1-BTC-PSBT-Firmware is a hardware wallet that simplifies secure handling of crypto coins through storing
-private keys and signing transactions. The content of this repository is the bootloader and firmware
-used on the device. The X1-BTC-PSBT-Firmware is meant to be used primarily with the
-[BitBoxApp](https://github.com/Chaitanya Kumar/bitbox-wallet-app), although third party integration is
-possible through the X1-BTC-PSBT-Firmware API.
+The firmware interfaces with companion applications over USB and exposes an API for third-party tools.
 
-The main functionality of the firmware is the following:
-
-* Safely receive and send coins.
-* Interacting with the user through touch sliders and a display.
-* Back up the seed to a microSD card.
-* Back up the seed by displaying the BIP39 mnemonic encoding on the screen.
-* Import 12, 18 or 24 word BIP39 mnemonics
-* Generate a random seed from multiple strong sources of entropy.
-* Protect the seed from attackers.
-* Derive keys from the seed according to BIP39 and BIP32.
-* Return the extended public key for a keypath so that the app can find all unspent transaction
-  outputs.
-* Display the receive address for the keypath, coin and script/address type.
-* Display the receive address, transaction amount and network fee and sign each input after
-  confirmation.
+## Features
+- Securely receive and send Bitcoin transactions  
+- Interact with the user via hardware buttons and display  
+- Generate and restore BIP-39 seeds (12, 18, or 24 words)  
+- Derive extended public keys (xpub) for a given keypath  
+- Sign PSBTs with user confirmation prompts  
+- Support for RBF (Replace-By-Fee) and CPFP (Child-Pays-For-Parent)  
 
 ## Architecture
+This firmware is written in C/C++ for the Cypherock X1 microcontroller.  
+It uses an ATECC608 secure element for key storage and cryptographic operations.  
+Communication occurs over USB CDC and I2C interfaces.
 
-<p align="center"><img src="./doc/bb02-firmware-arch.svg" width="80%" /></p>
+## Build & Installation
+See [BUILD.md](BUILD.md) for detailed instructions on setting up your toolchain and flashing the firmware.
 
-The main chip on the device is the microcontroller from Microchip (ATSAMD51J20A). This chip is used
-for communication to the BitBoxApp via USB, to the user via the sliders and to the secure element
-(ATECC608B) via I2C.
-
-### Sliders
-
-The sliders along the edges of the device are used for user input. There are three input gestures:
-* Tap
-* Slide
-* Hold to confirm
-
-<p align="center"><img src="./doc/bb02PwEntry.gif" /></p>
-
-### USB
-
-The USB communication is implemented using the request-response pattern with encrypted protobuf
-messages. The encryption protocol used is Noise with out-of-band authentication.
-
-### Hardware docs
-
-[PCB schematics v2.1](./doc/bb02_v2.10_schematics.pdf)
-
-[PCB bill of materials (BOM) v2.1](./doc/bb02_bom_v2.10.pdf)
-
-[PCB x-ray v2.1](./doc/bb02_xray_v2.10_top_pcb.png)
+## Usage
+1. Compile and flash the firmware onto your Cypherock X1.  
+2. Use the companion Python utility (`py/load_firmware.py`) or the BitBoxApp to install/upgrade.  
+3. Interact with the device to generate/restore seeds or sign PSBTs.
 
 ## Contributing
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting issues or pull requests.  
+We welcome improvements to testing, new PSBT flows, or support for advanced features.
 
-The instructions for setting up a development environment can be found in [BUILD.md](BUILD.md).
-Please also read our [CONTRIBUTING.md](CONTRIBUTING.md) before filing issues and pull requests.
-
-## Installing/upgrading firmware
-
-There are two main ways to install or upgrade firmware on a X1-BTC-PSBT-Firmware:
-
-1. by running the [BitBoxApp](https://github.com/Chaitanya Kumar/bitbox-wallet-app/)
-2. by running [./py/load_firmware.py](./py/load_firmware.py) after installing the [x1-btc-psbt-firmware](./py)
-   Python package, e.g. `./py/load_firmware.py firmware-btc.v9.12.0.signed.bin`.
-
-## Reporting a vulnerability
-
-See our [security policy](SECURITY.md).
+## License
+This project is licensed under the GPL-3.0 License. See [LICENSE](LICENSE) for details.

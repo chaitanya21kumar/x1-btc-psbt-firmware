@@ -1,0 +1,5 @@
+# Modules needed to run scripts in this directory
+tzlocal>=1.5,<2.0
+# until x1-btc-psbt-firmware is released it must be installed from py/x1-btc-psbt-firmware
+x1-btc-psbt-firmware
+requests

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="561" height="451" viewBox="-0.5 -0.5 561 451" font-family="Helvetica" font-size="12" text-anchor="middle">
+  <path fill="#fff" stroke="#000" d="M173 0h210v120H173Z"/>
+  <path fill="none" stroke="#000" stroke-linejoin="round" stroke-miterlimit="10" d="M283 180.5h10.5l-15.5 19-15.5-19H273v-41h-10.5l15.5-19 15.5 19H283Z"/>
+  <path fill="#fff" stroke="#fff" stroke-width="12" d="M255.202 158.836h46.29v1.447h-46.29z"/>
+  <text x="278.5" y="164.5">USB</text>
+  <path fill="#fff" stroke="#000" d="M0 200h560v250H0Z"/>
+  <path fill="none" stroke="#000" stroke-miterlimit="10" d="M278 277v46H85v38.6"/>
+  <path stroke="#000" stroke-miterlimit="10" d="m85 366.9-3.5-7 3.5 1.7 3.5-1.7z"/>
+  <path fill="none" stroke="#000" stroke-miterlimit="10" d="M278 277v46h-63v38.6"/>
+  <path stroke="#000" stroke-miterlimit="10" d="m215 366.9-3.5-7 3.5 1.7 3.5-1.7z"/>
+  <path fill="none" stroke="#000" stroke-miterlimit="10" d="M278 277v46h67v38.6"/>
+  <path stroke="#000" stroke-miterlimit="10" d="m345 366.9-3.5-7 3.5 1.7 3.5-1.7z"/>
+  <path fill="none" stroke="#000" stroke-miterlimit="10" d="M278 277v46h197v38.6"/>
+  <path fill="#fff" stroke="#fff" stroke-width="12.542" d="M78.97 342.564h403.049v.181H78.97z"/>
+  <path stroke="#000" stroke-miterlimit="10" d="m475 366.9-3.5-7 3.5 1.7 3.5-1.7z"/>
+  <text x="388.5" y="395.5">ADC</text>
+  <path fill="#fff" stroke="#000" d="M415 368h120v52H415Z"/>
+  <text x="475.5" y="399.5">Sliders</text>
+  <path fill="#fff" stroke="#000" d="M155 368h120v52H155Z"/>
+  <text x="214.5" y="399.5">µSD</text>
+  <path fill="#fff" stroke="#000" d="M285 368h120v52H285Z"/>
+  <text x="344.5" y="390.5"><tspan x="344.5" y="390.5">Secure Chip</tspan><tspan x="344.5" y="405.5">(ATECC608B)</tspan></text>
+  <path fill="#fff" stroke="#000" d="M25 368h120v52H25Z"/>
+  <text x="85.5" y="399.5">OLED</text>
+  <path fill="#fff" stroke="#000" d="M218 225h120v52H218Z"/>
+  <text x="278.5" y="247.5"><tspan x="278.5" y="247.5">MCU</tspan><tspan x="278.5" y="262.5">(ATSAMD51J20A)</tspan></text>
+  <text x="38.5" y="220.5" font-weight="bold">BitBox02</text>
+  <text x="188.5" y="19.5" font-weight="bold">PC</text>
+  <path fill="#fff" stroke="#000" d="M218 30h120v60H218Z"/>
+  <text x="261.5" y="48.5" color="#000" font-weight="bold" style="-inkscape-font-specification:Helvetica">BitBoxApp</text>
+  <text x="85.5" y="346.5">SPI</text>
+  <text x="345.5" y="346.5">I2C</text>
+  <text x="475.5" y="346.5">ADC</text>
+  <text x="215.5" y="346.5">SPI</text>
+</svg>

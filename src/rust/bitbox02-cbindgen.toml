@@ -1,0 +1,51 @@
+# Copyright 2020 Shift Cryptosecurity AG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language = "C"
+
+include_guard = "BITBOX02_RUST_H"
+
+include_version = true
+
+header = '''
+#include "platform/platform_config.h"
+#include "util.h"
+#include <ui/components/confirm.h>
+
+#if APP_ETH == 1
+#define RUST_APP_ETHEREUM
+#endif
+
+'''
+
+[parse]
+# Parse dependencies for types ...
+parse_deps = true
+
+# ... but only parse these crates.
+include = ["bitbox02-rust"]
+
+# also generate bindings from these crates.
+extra_bindings = []
+
+[export]
+# malloc, free declared in bitbox02-rust-c/src/alloc.rs, but does not need to be exported, as it
+# already exists in stdlib.h.
+exclude = [
+  "malloc",
+  "free",
+]
+
+[defines]
+"feature=app-ethereum" = "RUST_APP_ETHEREUM"

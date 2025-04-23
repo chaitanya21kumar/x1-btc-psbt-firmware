@@ -1,0 +1,81 @@
+# See reference docs at
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Pull request CI
+on: pull_request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-head-ci:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: CI
+        uses: ./.github/actions/pr-ci-common
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+
+  # Generate a list of commits to run CI on
+  generate-matrix:
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # HEAD~ because  we want to skip the last commit (which is built in job above)
+      - name: Create jobs for commits in PR history
+        id: set-matrix
+        run: |
+          echo matrix=$(.ci/matrix-from-commit-log ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}~) >> $GITHUB_OUTPUT
+
+  # Run this job for every commit in the PR except HEAD.
+  # This job simulates what github does for the PR HEAD commit but for every other commit in the
+  # PR. So for every commit, it creates a merge commit between that commit and the base branch.
+  # Then it runs the CI on that merge commit.
+  # The only caveat is that this file (pr-ci.yml) is already loaded from the PR HEAD merge commit,
+  # and therefore we need to load the `.ci` scripts from the PR HEAD merge commit. The outcome of
+  # that is that changes to the CI is not tested per commit. All commits use the final version.
+  pr-commit-ci:
+    runs-on: ubuntu-22.04
+    needs: [ generate-matrix ]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+    if: needs.generate-matrix.outputs.matrix != ''
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Create merge commit
+        env:
+          GIT_AUTHOR_NAME: Bot
+          GIT_AUTHOR_EMAIL: bot@bitbox.swiss
+          GIT_COMMITTER_NAME: Bot
+          GIT_COMMITTER_EMAIL: bot@bitbox.swiss
+        run: |
+          git fetch origin ${{ matrix.commit }} ${{ github.event.pull_request.merge_commit_sha }}
+          git merge --no-ff --no-edit ${{ matrix.commit }}
+          git submodule update --init --recursive
+          git log -1 --format="Head %H, Parents %P"
+          # Since the workflow definition is taken from the pull request merge commit, we need to
+          # get the .ci scripts from there as well.
+          git checkout -f ${{ github.event.pull_request.merge_commit_sha }} -- .ci .github
+
+      - name: CI
+        uses: ./.github/actions/pr-ci-common
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}

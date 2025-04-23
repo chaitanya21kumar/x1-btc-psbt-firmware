@@ -1,0 +1,69 @@
+# Copyright 2020 Shift Cryptosecurity AG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[workspace]
+
+members = [
+    "bitbox02-rust-c",
+    "bitbox02-rust",
+    "util",
+    "bitbox02-noise",
+    "bitbox02",
+    "bitbox02-sys",
+    "erc20_params",
+    "streaming-silent-payments",
+]
+
+resolver = "2"
+
+[workspace.dependencies]
+bech32 = { version = "0.11.0", default-features = false }
+bitcoin = { version = "0.32.2", default-features = false }
+hex = { version = "0.4", default-features = false, features = ["alloc"] }
+num-bigint = { version = "0.4.6", default-features = false }
+sha2 = { version = "0.10.8", default-features = false }
+sha3 = { version = "0.10.8", default-features = false }
+zeroize = "1.7.0"
+
+[patch.crates-io]
+rtt-target = { git = "https://github.com/probe-rs/rtt-target.git", rev = "117d9519a5d3b1f4bc024bc05f9e3c5dec0a57f5" }
+
+[profile.release]
+# This only affects the .elf output. Debug info is stripped from the final .bin.
+# Paths to source code can still appear in the final bin, as they are part of the panic!() output.
+debug = true
+# Optmimize maximally for size, 'z' should produce even less code than 's'
+opt-level = 'z'
+# 1 gives smaller binaries (16 is default in release mode)
+codegen-units = 1
+# Abort on panics in release builds.
+panic = 'abort'
+# LTO gives smaller binaries due to cross-crate optimizations
+lto = true
+
+# Mimic the release profile to save as much space as possible
+[profile.dev]
+opt-level = 'z'
+# Set lto="thin" to get faster builds
+lto = true
+# Enabling debug assertions will increase binary size
+debug-assertions = false
+# Enabling overflow checks will increase binary size
+overflow-checks = false
+# Set to maximally 256 to compile more in parallel
+codegen-units = 1
+# Set to 'abort' to save space
+panic = 'unwind'
+# Set to false to potentially reduce binary size
+incremental = true

@@ -1,0 +1,31 @@
+/build/
+/build-*/
+/releases/temp/
+.vagrant/
+# LSP caches and local configs
+.clangd
+.cquery
+.ccls
+.ccls-cache
+compile_commands.json
+compile_flags.txt
+.vscode
+.DS_Store
+
+# gnu global
+/src/GPATH
+/src/GRTAGS
+/src/GTAGS
+
+*.pyc
+.mypy_cache/
+bitbox02.egg-info
+/py/bitbox02/build
+/py/bitbox02/dist
+
+# Git backup files created on merge conflicts
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*
+*.orig

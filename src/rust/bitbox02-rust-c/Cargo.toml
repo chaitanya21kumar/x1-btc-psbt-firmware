@@ -1,0 +1,103 @@
+# Copyright 2020 Shift Cryptosecurity AG
+# Copyright 2024 Shift Crypto AG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[package]
+name = "bitbox02-rust-c"
+version = "0.1.0"
+authors = ["Shift Crypto AG <support@bitbox.swiss>"]
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+bitbox02-rust = { path = "../bitbox02-rust", optional = true }
+bitbox02 = { path = "../bitbox02", optional = true }
+bitbox02-noise = { path = "../bitbox02-noise", optional = true }
+util = { path = "../util" }
+p256 = { version = "0.13.2", default-features = false, features = ["arithmetic", "ecdsa"], optional = true }
+der =  { version = "0.7.9", default-features = false, optional = true }
+hex = { workspace = true }
+sha2 = { workspace = true, optional = true }
+sha3 = { workspace = true, optional = true }
+bitcoin = { workspace = true, optional = true }
+
+[features]
+# Only one of the "target-" should be activated, which in turn defines/activates the dependent features.
+target-bootloader = ["bootloader", "platform-bitbox02"]
+target-bootloader-development = ["bootloader", "platform-bitbox02"]
+target-bootloader-development-locked = ["bootloader", "platform-bitbox02"]
+target-bootloader-production = ["bootloader", "platform-bitbox02"]
+target-bootloader-btc = ["bootloader", "platform-bitbox02"]
+target-bootloader-btc-development = ["bootloader", "platform-bitbox02"]
+target-bootloader-btc-production = ["bootloader", "platform-bitbox02"]
+target-firmware = ["firmware", "platform-bitbox02", "app-bitcoin", "app-litecoin", "app-ethereum", "app-u2f", "app-cardano"]
+target-firmware-btc = ["firmware", "platform-bitbox02", "app-bitcoin"]
+target-factory-setup = [
+  # enable these features
+  "firmware",
+  "platform-bitbox02",
+]
+# add Rust features which are called in the C unit tests (currently there is only one target for C tests).
+target-c-unit-tests = [
+  "dep:bitcoin", # for rust_base58_encode_check()
+  "app-bitcoin",
+  "app-ethereum",
+  "app-cardano",
+  "firmware",
+  "c-unit-testing",
+]
+
+platform-bitbox02 = []
+
+bootloader = []
+firmware = ["bitbox02-rust", "bitbox02", "bitbox02-noise", "sha2", "p256", "der"]
+
+# Only to be enabled in Rust unit tests.
+testing = ["bitbox02-rust/testing", "bitbox02/testing"]
+
+# Active when the Rust code is compiled to be linked into the C unit tests and simulator.
+c-unit-testing = ["bitbox02-rust/c-unit-testing", "bitbox02/c-unit-testing"]
+
+app-ethereum = [
+  # enable this dep
+  "sha3",
+  # enable this feature in the deps
+  "bitbox02-rust/app-ethereum",
+  "bitbox02/app-ethereum",
+]
+
+app-bitcoin = [
+  # enable this feature in the deps
+  "bitbox02-rust/app-bitcoin",
+]
+
+app-litecoin = [
+  # enable this feature in the deps
+  "bitbox02-rust/app-litecoin",
+]
+
+app-u2f = [
+  # enable this feature in the deps
+  "bitbox02-rust/app-u2f",
+]
+
+app-cardano = [
+ # enable this feature in the deps
+  "bitbox02-rust/app-cardano",
+]
+
+rtt = [ "util/rtt" ]

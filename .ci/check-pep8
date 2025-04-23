@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# This script checks only that the modified files follow pep8
+
+# Fail on error
+set -e
+
+# Exit on pipe fail
+set -o pipefail
+
+command -v git >/dev/null 2>&1 || { echo >&2 "git is missing"; exit 1; }
+
+# grep will exit with 1 if no lines are found
+FILES=$(git --no-pager diff --diff-filter=d --name-only ${TARGET_BRANCH} HEAD | grep -v -e "old/" -e "generated/" -e "rust/vendor/" | grep -E ".py\$" || exit 0)
+if [ -z "${FILES}" ] ; then
+       exit 0
+fi
+
+./scripts/format-python --check --fast ${FILES}
+# We lint all default Python files, as linting only a subset can lead to errors (e.g. if
+# send_message.py only is linted without the bitbox02 dep).
+./scripts/lint-python

@@ -1,0 +1,105 @@
+# Copyright 2020 Shift Cryptosecurity AG
+# Copyright 2024 Shift Crypto AG
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[package]
+name = "bitbox02-rust"
+version = "0.1.0"
+authors = ["Shift Crypto AG <support@bitbox.swiss>"]
+edition = "2021"
+description = "BitBox02 functionality implemented in rust"
+license = "Apache-2.0"
+
+[lib]
+# TODO: re-enable doctests. It currently fails with:
+# "no global memory allocator found but one is required; link to std or add `#[global_allocator]` to a static item that implements the GlobalAlloc trait."
+doctest = false
+
+[dependencies]
+bitbox02 = {path = "../bitbox02"}
+util = { path = "../util" }
+erc20_params = { path = "../erc20_params", optional = true }
+binascii = { version = "0.1.4", default-features = false, features = ["encode"] }
+bitbox02-noise = {path = "../bitbox02-noise"}
+streaming-silent-payments = { path = "../streaming-silent-payments", optional = true }
+hex = { workspace = true }
+sha2 = { workspace = true }
+sha3 = { workspace = true, optional = true }
+digest = "0.10.6"
+zeroize = { workspace = true }
+num-bigint = { workspace = true, optional = true }
+num-traits = { version = "0.2", default-features = false }
+# If you change this, also change src/rust/.cargo/config.toml.
+bip32-ed25519 = { git = "https://github.com/BitBoxSwiss/rust-bip32-ed25519", tag = "v0.2.0", optional = true }
+bech32 = { workspace = true, optional = true }
+blake2 = { version = "0.10.6", default-features = false, optional = true }
+minicbor = { version = "0.24.0", default-features = false, features = ["alloc"], optional = true }
+crc = { version = "3.0.1", optional = true }
+ed25519-dalek = { version = "2.1.1", default-features = false, features = ["hazmat", "digest"], optional = true }
+hmac = { version = "0.12.1", default-features = false, features = ["reset"] }
+
+miniscript = { version = "12.2.0", default-features = false, features = ["no-std"], optional = true }
+bitcoin = { workspace = true }
+# We don't rely on this dep directly, the miniscript/bitcoin deps do. We list it here to enable the
+# small-hash feature to reduce the binary size, saving around 2784 bytes (as measured at time of
+# writing, this might fluctuate over time).
+bitcoin_hashes = { version = "0.14.0", default-features = false, features = ["small-hash"] }
+
+[dependencies.prost]
+# keep version in sync with tools/prost-build/Cargo.toml.
+version = "0.13.1"
+default-features = false
+features = ["derive"]
+
+[features]
+ed25519 = [
+  "dep:bip32-ed25519",
+  "dep:ed25519-dalek"
+]
+
+app-ethereum = [
+  "dep:erc20_params",
+  "dep:sha3",
+  "dep:num-bigint",
+  "bitbox02/app-ethereum",
+]
+
+app-bitcoin = [
+  "dep:bech32",
+  "dep:miniscript",
+  "dep:streaming-silent-payments",
+  "bitbox02/app-bitcoin",
+]
+app-litecoin = [
+  "dep:bech32",
+  "bitbox02/app-litecoin",
+]
+
+app-u2f = [
+  "bitbox02/app-u2f",
+]
+
+app-cardano = [
+  "dep:bech32",
+  "dep:blake2",
+  "dep:minicbor",
+  "dep:crc",
+  "ed25519"
+]
+
+testing = [
+  "bitbox02/testing"
+]
+
+c-unit-testing = []
